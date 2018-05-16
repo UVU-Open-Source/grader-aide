@@ -4,6 +4,7 @@
   "description": "An auto grader for zybooks assignments",
   "main": "index.js",
   "scripts": {
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/UVU-Open-Source/node-zybooks-auto-grader/issues"
   },
-  "homepage": "https://github.com/UVU-Open-Source/node-zybooks-auto-grader#readme"
+  "homepage": "https://github.com/UVU-Open-Source/node-zybooks-auto-grader#readme",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "commander": "^2.15.1"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/node": "^10.1.0"
+  }
 }
