@@ -18,11 +18,14 @@
   },
   "homepage": "https://github.com/UVU-Open-Source/node-zybooks-auto-grader#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "chalk": "^2.4.1",
     "commander": "^2.15.1"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/chalk": "^2.2.0",
-    "@types/node": "^10.1.0"
+    "@types/node": "^10.1.0",
+    "nodemon": "^1.17.4"
   }
 }
