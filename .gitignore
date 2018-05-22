@@ -61,7 +61,4 @@ typings/
 .next
 
 # custom folders
-input/*
-output/*
-!input/.gitkeep
-!output/.gitkeep
+server/students.json
