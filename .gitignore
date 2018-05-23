@@ -5,6 +5,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.DS_Store
+
 # Runtime data
 pids
 *.pid
@@ -62,3 +71,11 @@ typings/
 
 # custom folders
 server/students.json
+
+client/node_modules/
+server/node_modules/
+client/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+client/test/unit/coverage/
