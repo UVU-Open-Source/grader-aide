@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 // utils
-const addZybooksGradesToStudentWithToken = require('./utils/addZybooksGradeToStudent')
+const addZybooksGradesToStudentWithToken = require('./utils/addZybooksGradesToStudent')
 
 const app = express()
 
