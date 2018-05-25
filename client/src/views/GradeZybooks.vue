@@ -16,14 +16,31 @@
 
       <!-- canvas auth -->
       <div class="col-sm">
-          <auth-success-card
-            v-if="cToken"
-            success-message="Cavnas Token Received"
-          ></auth-success-card>
-          <canvas-auth-card
-            @save-canvas-token="saveCanvasToken"
-          ></canvas-auth-card>
-        </div>
+        <auth-success-card
+          v-if="cToken"
+          success-message="Cavnas Token Received"
+        ></auth-success-card>
+        <canvas-auth-card
+          v-else
+          @save-canvas-token="saveCanvasToken"
+        ></canvas-auth-card>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-2 mt-5" v-for="chapter of chapters" :key="chapter.value">
+        <button-with-spinner
+          :isLoading="chapter.loading"
+          :isLoaded="chapter.loaded"
+          @click="SubmitGradesFor(chapter)"
+        >
+          Grade Chapter {{ chapter.value }}
+
+          <template slot="success" v-if="chapter.loaded">
+            <span>Grade Submitted</span>
+          </template>
+        </button-with-spinner>
+      </div>
     </div>
   </div>
 </template>
@@ -31,18 +48,75 @@
 <script>
 // @ts-nocheck
 import axios from 'axios'
+import BASE_URL from '@/utils/baseURL'
 
 // components
 import ZybooksAuthCard from '@/components/ZybooksAuthCard'
 import CanvasAuthCard from '@/components/CanvasAuthCard'
 import AuthSuccessCard from '@/components/AuthSuccessCard'
+import ButtonWithSpinner from '@/components/ButtonWithSpinner'
 
 export default {
   data() {
     return {
-      zyReqErr: '',
+      // persistent
       zyToken: '',
-      cToken: ''
+      cToken: '',
+      // gui state
+      zyReqErr: '',
+      // todo hard coded for now. should be dynamic in the future for use in multiple classes
+      chapters: [
+        {
+          value: 1,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 2,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 3,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 4,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 5,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 6,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 7,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 8,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 9,
+          loading: false,
+          loaded: false
+        },
+        {
+          value: 10,
+          loading: false,
+          loaded: false
+        }
+      ]
     }
   },
   methods: {
@@ -67,15 +141,31 @@ export default {
       // todo its a jwt so verify its authenticity?
       // todo add error modal or somethign?
       this.cToken = token
+    },
+    SubmitGradesFor(chapter) {
+      chapter.loading = true
+
+      const config = {
+        headers: {
+          zyToken: this.zyToken,
+          cToken: this.cToken
+        }
+      }
+
+      axios
+        .get(`${BASE_URL}/api/v1/grade/zybooks/chapter/${chapter.value}`, config)
+        .then(response => {
+          chapter.loading = false
+          if(response.data.success) chapter.loaded = true
+        })
+        .catch(e => chapter.loading = false)
     }
-  },
-  created() {
-    axios.get('http://localhost:3000/ping').then(console.log)
   },
   components: {
     ZybooksAuthCard,
     CanvasAuthCard,
-    AuthSuccessCard
+    AuthSuccessCard,
+    ButtonWithSpinner
   }
 }
 </script>
