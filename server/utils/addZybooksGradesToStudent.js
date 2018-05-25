@@ -14,7 +14,6 @@ module.exports = function addZybooksGradesToStudentWithToken(authToken, student)
     return axios.default
       .get(`${BASE_URL}/activities/${student.zybooksId}?auth_token=${authToken}`)
       .then(res => {
-        console.log(res);
         return res
       })
       .then(res => {
