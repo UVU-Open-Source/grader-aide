@@ -5,6 +5,7 @@ const https = require('https')
 const COURSE_ID = '10120000000466507'
 const BASE_URL = 'https://canvas.instructure.com/api/v1'
 module.exports = {
+  // fixme BROKEN sometimes returns wrong id for an assignment when querying canvas.
   findAssignmentId(authToken, searchTerm) {
     const config = {
       headers: {
@@ -22,6 +23,7 @@ module.exports = {
       })
   },
 
+  // fixme assignmentId needs to be used instead of hardcoded once findAssignmentId func is fixed
   submitZybooksGradesToCanvas(authToken, assignmentId, chapterNum, students) {
     const chapterIndex = chapterNum - 1
     const config = {
