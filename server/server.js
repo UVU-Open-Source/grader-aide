@@ -31,8 +31,8 @@ app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
   let gradedStudents
   Promise.all(PromiseGradesForStudents)
     .then(modifiedStudents => gradedStudents = modifiedStudents)
-    // .then(() => canvasApi.findAssignmentId(cToken, `ch${chapterNum}`))
-    // .then(assignmentId => canvasApi.submitZybooksGradesToCanvas(cToken, assignmentId, chapterNum, gradedStudents))
+    .then(() => canvasApi.findAssignmentId(cToken, `ch${chapterNum}`))
+    .then(assignmentId => canvasApi.submitZybooksGradesToCanvas(cToken, assignmentId, chapterNum, gradedStudents))
     .then(() => res.json({ success: true }))
     .catch(e => {
       console.log(e)
