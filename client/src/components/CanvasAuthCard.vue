@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <form @submit="handleSaveCanvasToken">
+      <form @submit.prevent="handleSaveCanvasToken">
         <div class="form-group">
           <label>Canvas Auth Token</label>
           <input type="text" class="form-control" v-model="cToken">
