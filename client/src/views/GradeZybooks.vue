@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" v-if="authTokensReceived">
       <div class="col-sm-2 mt-5" v-for="chapter of chapters" :key="chapter.value">
         <button-with-spinner
           :isLoading="chapter.loading"
@@ -117,6 +117,11 @@ export default {
           loaded: false
         }
       ]
+    }
+  },
+  computed: {
+    authTokensReceived() {
+      return this.zyToken && this.cToken
     }
   },
   methods: {
