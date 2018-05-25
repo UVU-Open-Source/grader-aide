@@ -1,14 +1,17 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const logger = require('morgan')
 
 // utils
 const addZybooksGradesToStudentWithToken = require('./utils/addZybooksGradesToStudent')
+const canvasApi = require('./utils/canvasApi')
 
 const app = express()
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(logger('dev'))
 
 app.get('/ping', (req, res) => {
   res.send('pong')
@@ -25,15 +28,20 @@ app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
   const addZybooksGradesToStudent = addZybooksGradesToStudentWithToken(zyToken)
   const PromiseGradesForStudents = students.map(addZybooksGradesToStudent)
 
+  let gradedStudents
   Promise.all(PromiseGradesForStudents)
-    .then((gradedStudents) => {
-
-      res.json({ gradedStudents, chapterNum, cToken, zyToken })
+    .then(modifiedStudents => gradedStudents = modifiedStudents)
+    // .then(() => canvasApi.findAssignmentId(cToken, `ch${chapterNum}`))
+    // .then(assignmentId => canvasApi.submitZybooksGradesToCanvas(cToken, assignmentId, chapterNum, gradedStudents))
+    .then(() => res.json({ success: true }))
+    .catch(e => {
+      console.log(e)
+      res.status(500)
     })
-    .catch(e => res.status(500))
 })
 
 const PORT = 3000
 app.listen(PORT, () => {
   console.log(`app listening at http://localhost:${PORT}`)
 })
+
