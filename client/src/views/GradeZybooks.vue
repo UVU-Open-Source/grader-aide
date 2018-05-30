@@ -46,9 +46,18 @@
 </template>
 
 <script>
+// todo
+// -x refactor component to use authenticate method
+// -x create function for checking session expiration
+// -x create function for updating zybooks token if og expired
+// - add a way to delete local storage/logout of service
+// - setup similar work flow with canvas
 // @ts-nocheck
 import axios from 'axios'
 import BASE_URL from '@/utils/baseURL'
+
+// apis
+import * as zybooksApi from '@/apis/zybooks.api'
 
 // components
 import ZybooksAuthCard from '@/components/ZybooksAuthCard'
@@ -126,21 +135,18 @@ export default {
   },
   methods: {
     getZybooksToken(credentials) {
-      // todo add error modal or somethign?
-      // todo notification that zybooks auth worked
+      // todo needs real error handling done in some capacity
       const { zyEmail, zyPassword } = credentials
-      const component = this
-      axios
-        .post('https://zyserver.zybooks.com/v1/signin', {
-          email: zyEmail,
-          password: zyPassword
-        })
-        .then(response => {
-          if(response.data.error) return component.zyReqErr = response.data.error.message
 
-          component.zyToken = response.data.session.auth_token
-          component.zyReqErr = ''
-        })
+      zybooksApi
+        .signin(zyEmail, zyPassword)
+        .then(this.handleUpdateZybooksAuthValues)
+    },
+    handleUpdateZybooksAuthValues({ token, error }) {
+      if(error) return this.zyReqErr = error
+
+      this.zyToken = token
+      this.zyReqErr = ''
     },
     saveCanvasToken(token) {
       // todo its a jwt so verify its authenticity?
@@ -165,6 +171,19 @@ export default {
         })
         .catch(e => chapter.loading = false)
     }
+  },
+  created() {
+    const component = this
+
+    zybooksApi
+      .getStoredZybooksAuthToken()
+      .then(this.handleUpdateZybooksAuthValues)
+      .catch(err => {
+        // todo needs full error handling implemented for now just console logging unhandled error
+        if(err.message !== zybooksApi.NO_TOKEN_STORED) console.log(err)
+
+        // failing gracefully because if NO_TOKEN_STORED user needs to authenticate with zybooks
+      })
   },
   components: {
     ZybooksAuthCard,
