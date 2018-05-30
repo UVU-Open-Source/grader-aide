@@ -5,17 +5,10 @@ const base = axios.create({
   baseURL: 'https://zyserver.zybooks.com/v1'
 })
 
-const logger = data => {
-  console.log(data)
-
-  return data
-}
-
 export function signin(email, password) {
   return base
     .post('/signin', { email, password })
     .then(pluckData)
-    .then(logger)
     .then(addAuthDataToLocalStorage)
     .then(returnAuthTokenOrErrorMessage)
 }
