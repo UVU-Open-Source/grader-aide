@@ -39,7 +39,9 @@ app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
     })
 })
 
-const PORT = 3000
+app.get('*', express.static(`${__dirname}/../client/dist`))
+
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log(`app listening at http://localhost:${PORT}`)
 })
