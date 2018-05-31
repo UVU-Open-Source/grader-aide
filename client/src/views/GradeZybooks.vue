@@ -22,6 +22,7 @@
         ></auth-success-card>
         <canvas-auth-card
           v-else
+          :cReqErr="cReqErr"
           @save-canvas-token="saveCanvasToken"
         ></canvas-auth-card>
       </div>
@@ -58,6 +59,7 @@ import BASE_URL from '@/utils/baseURL'
 
 // apis
 import * as zybooksApi from '@/apis/zybooks.api'
+import * as canvasApi from '@/apis/canvas.api'
 
 // components
 import ZybooksAuthCard from '@/components/ZybooksAuthCard'
@@ -73,6 +75,7 @@ export default {
       cToken: '',
       // gui state
       zyReqErr: '',
+      cReqErr: '',
       // todo hard coded for now. should be dynamic in the future for use in multiple classes
       chapters: [
         {
@@ -148,10 +151,17 @@ export default {
       this.zyToken = token
       this.zyReqErr = ''
     },
-    saveCanvasToken(token) {
-      // todo its a jwt so verify its authenticity?
-      // todo add error modal or somethign?
+    handleUpdateCanvasAuthValues({ token, error }) {
+      if(error) return this.cReqErr = error
+
       this.cToken = token
+      this.cReqErr = ''
+    },
+    saveCanvasToken(token) {
+      // todo add error modal or somethign?
+      canvasApi
+        .saveToken(token)
+        .then(this.handleUpdateCanvasAuthValues)
     },
     SubmitGradesFor(chapter) {
       chapter.loading = true
@@ -181,6 +191,16 @@ export default {
       .catch(err => {
         // todo needs full error handling implemented for now just console logging unhandled error
         if(err.message !== zybooksApi.NO_TOKEN_STORED) console.log(err)
+
+        // failing gracefully because if NO_TOKEN_STORED user needs to authenticate with zybooks
+      })
+
+    canvasApi
+      .getStoredCanvasAuthToken()
+      .then(this.handleUpdateCanvasAuthValues)
+      .catch(err => {
+        // todo needs full error handling implemented for now just console logging unhandled error
+        if(err.message !== canvasApi.NO_TOKEN_STORED) console.log(err)
 
         // failing gracefully because if NO_TOKEN_STORED user needs to authenticate with zybooks
       })
