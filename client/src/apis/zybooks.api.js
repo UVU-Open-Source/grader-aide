@@ -1,6 +1,8 @@
 import axios from 'axios'
 import moment from 'moment'
 
+import { pluckData } from './utils.api'
+
 const base = axios.create({
   baseURL: 'https://zyserver.zybooks.com/v1'
 })
@@ -22,6 +24,7 @@ export function getStoredZybooksAuthToken() {
 
       const { session } = data
       if(tokenIsExpired(session.expiry_date)) return renewAuth(session.refresh_token)
+
       return returnAuthTokenOrErrorMessage(data)
     })
 }
@@ -29,10 +32,8 @@ export function getStoredZybooksAuthToken() {
 export const NO_TOKEN_STORED = 'no zybooks data available'
 
 // ==================================================
-// helper methods
+// helper functions
 // ==================================================
-const pluckData = response => response.data
-
 function addAuthDataToLocalStorage(data) {
   if(data.success) window.localStorage.setItem('zybooks', JSON.stringify(data))
 
