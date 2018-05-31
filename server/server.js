@@ -36,7 +36,7 @@ app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
     .then(() => res.json({ success: true }))
     .catch(e => {
       console.log(e)
-      res.status(500)
+      res.status(500).end()
     })
 })
 
