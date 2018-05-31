@@ -10,6 +10,19 @@ module.exports = {
     const config = {
       headers: {
         Authorization: `Bearer ${authToken}`
+      },
+      // custom transformer was used because of number errors that occur with canvas id's
+      // this transformer function maintains the response as a string unless there was an error
+      // no results. If results were found, they first id is returned as a string
+      transformResponse: res => {
+        const idField = res.match(/"id":\d*/g) // '"id":123456'
+
+        if(idField) return idField[0].split(':')[1] // ['"id"', '123456']
+
+        return {
+          ...res,
+          data: JSON.parse(res)
+        }
       }
     }
 
@@ -19,11 +32,10 @@ module.exports = {
         if(response.data.errors) throw new Error('unable to fulfill findAssignmentId request')
         if(!response.data.length) throw new Error(`assignment ${searchTerm} was not found`)
 
-        return response.data[0].id
+        return response.data
       })
   },
 
-  // fixme assignmentId needs to be used instead of hardcoded once findAssignmentId func is fixed
   submitZybooksGradesToCanvas(authToken, assignmentId, chapterNum, students) {
     const chapterIndex = chapterNum - 1
     const config = {
@@ -36,7 +48,7 @@ module.exports = {
 
     // return {data, assignmentId}
     return axios.default
-      .post(`${BASE_URL}/courses/${COURSE_ID}/assignments/10120000003858835/submissions/update_grades`, data, config)
+      .post(`${BASE_URL}/courses/${COURSE_ID}/assignments/${assignmentId}/submissions/update_grades`, data, config)
       .then(response => {
         if(response.data.errors) throw new Error('unable to fulfill findAssignmentId request')
 
