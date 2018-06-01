@@ -66,7 +66,7 @@ module.exports = {
     return axios.default
       .get('https://uvu.instructure.com/api/v1/courses', config)
       .then(pluckData)
-      .then(token => ({ token, error: '' }))
+      .then(data => ({ token, error: '' }))
   }
 }
 
