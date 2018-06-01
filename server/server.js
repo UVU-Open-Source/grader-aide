@@ -5,7 +5,7 @@ const logger = require('morgan')
 
 // utils
 const addZybooksGradesToStudentWithToken = require('./utils/addZybooksGradesToStudent')
-const canvasApi = require('./utils/canvasApi')
+const canvasApi = require('./utils/canvas.api')
 
 const app = express()
 
@@ -39,10 +39,24 @@ app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
     })
 })
 
+app.post('/api/v1/authenticate/zybooks', () => {
+  
+})
+
+app.post('/api/v1/authenticate/canvas', (req, res) => {
+  canvasApi
+    .checkIfTokenIsValid(req.body.token)
+    .then(res.json.bind(res))
+    .catch(e => {
+      if(e.response && e.response.status === 401) return res.json({ token: '', error: 'Invalid or expired Canvas Token'})
+
+      res.status(500).end()
+    })
+})
+
 app.get('*', express.static(`${__dirname}/../client/dist`))
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log(`app listening at http://localhost:${PORT}`)
 })
-
