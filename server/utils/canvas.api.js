@@ -51,9 +51,22 @@ module.exports = {
       .post(`${BASE_URL}/courses/${COURSE_ID}/assignments/${assignmentId}/submissions/update_grades`, data, config)
       .then(response => {
         if(response.data.errors) throw new Error('unable to fulfill findAssignmentId request')
-
-        return
       })
+  },
+
+  checkIfTokenIsValid(token) {
+    if(!token) return Promise.resolve({ token: '', error: '' }) // no token exists
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+
+    return axios.default
+      .get('https://uvu.instructure.com/api/v1/courses', config)
+      .then(pluckData)
+      .then(token => ({ token, error: '' }))
   }
 }
 
@@ -70,3 +83,5 @@ function createStudentGradeDict(chapterIndex, students) {
     return dict
   }, { grade_data: {} })
 }
+
+const pluckData = response => response.data

@@ -1,5 +1,8 @@
 
+// todo this file needs error handling
 import axios from 'axios'
+
+import baseUrl from '../utils/baseURL'
 
 import { pluckData } from './utils.api'
 
@@ -12,11 +15,14 @@ export function getStoredCanvasAuthToken() {
 
       return checkIfTokenIsValid(token)
     })
+    .then(addTokenToLocalStorageIfValid)
+    .then(removeTokenFromLocalStorageIfInvalid)
 }
 
 export function saveToken(token) {
   return checkIfTokenIsValid(token)
-    .then(addTokenToLocalStorage)
+    .then(addTokenToLocalStorageIfValid)
+    .then(removeTokenFromLocalStorageIfInvalid)
     .catch(err => console.log('err', err.message))
 }
 
@@ -29,25 +35,18 @@ function checkIfTokenIsValid(token) {
   if(!token) return null // no token exists
 
   return axios
-    .get(`https://uvu.instructure.com/api/v1/courses?access_token=${token}`)
+    .post(`${baseUrl}/api/v1/authenticate/canvas`, { token })
     .then(pluckData)
-    .then(returnAuthTokenOrErrorMessage(token))
 }
 
-// api returns an errors array if token is invalid we dont care about the data othewrwise
-function returnAuthTokenOrErrorMessage(token) {
-  return function(data) {
-    // if invalid remove old bad id from local storage
-    if(data.errors) window.localStorage.removeItem('canvas')
-
-    return data.errors
-      ? { token: '', error: 'Invalid or expired Canvas Token'}
-      : { token, error: '' }
-  }
-}
-
-function addTokenToLocalStorage(data) {
+function addTokenToLocalStorageIfValid(data) {
   if(data.token) window.localStorage.setItem('canvas', data.token)
+
+  return data
+}
+
+function removeTokenFromLocalStorageIfInvalid(data) {
+  if(data.error) window.localStorage.removeItem('canvas')
 
   return data
 }
