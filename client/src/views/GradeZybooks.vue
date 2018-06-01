@@ -47,12 +47,7 @@
 </template>
 
 <script>
-// todo
-// -x refactor component to use authenticate method
-// -x create function for checking session expiration
-// -x create function for updating zybooks token if og expired
-// - add a way to delete local storage/logout of service
-// - setup similar work flow with canvas
+// todo reload with auth tokens causes input boxes to show up while auth is happening. see if we can fix this
 // @ts-nocheck
 import axios from 'axios'
 import BASE_URL from '@/utils/baseURL'
