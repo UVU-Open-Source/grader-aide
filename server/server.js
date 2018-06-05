@@ -4,7 +4,7 @@ const cors = require('cors')
 const logger = require('morgan')
 
 // utils
-const addZybooksGradesToStudentWithToken = require('./utils/addZybooksGradesToStudent')
+const zybooksApi = require('./utils/zybooks.api')
 const canvasApi = require('./utils/canvas.api')
 
 const app = express()
@@ -25,7 +25,7 @@ app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
   const cToken = req.get('cToken')
   const zyToken = req.get('zyToken')
 
-  const addZybooksGradesToStudent = addZybooksGradesToStudentWithToken(zyToken)
+  const addZybooksGradesToStudent = zybooksApi.addZybooksGradesToStudentWithToken(zyToken)
   const PromiseGradesForStudents = students.map(addZybooksGradesToStudent)
 
   let gradedStudents
@@ -39,8 +39,26 @@ app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
     })
 })
 
-app.post('/api/v1/authenticate/zybooks', () => {
-  
+app.post('/api/v1/authenticate/zybooks', (req, res) => {
+  const { email, password } = req.body
+
+  zybooksApi
+    .signin(email, password)
+    .then(res.json.bind(res))
+    .catch(e => {
+      res.status(500).end()
+    })
+})
+
+app.post('/api/v1/authenticate/zybooks/renew', (req, res) => {
+  const { refresh_token } = req.body
+
+  zybooksApi
+    .renew(refresh_token)
+    .then(res.json.bind(res))
+    .catch(e => {
+      res.status(500).end()
+    })
 })
 
 app.post('/api/v1/authenticate/canvas', (req, res) => {

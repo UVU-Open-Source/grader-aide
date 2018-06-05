@@ -3,25 +3,41 @@
  * https://zyserver.zybooks.com/v1/zybook/UVUCS2550WagstaffSummer2018/activities/316123 <- user id
  *  ?auth_token=eyJhbGciOiJIUzI1NiIsImV4cCI6MTUyNjY4MDE3OSwiaWF0IjoxNTI2NTA3Mzc5fQ.eyJ1c2VyX2lkIjozMTczMDZ9.wtfo9bSg0kqxrGpOsD1JBRs9pVJUrFOCYyxtZj9htzs
  */
-const fs = require('fs')
 const axios = require('axios')
-const BASE_URL = 'https://zyserver.zybooks.com/v1/zybook/UVUCS2550WagstaffSummer2018'
-// needs to be replaced every use right now
-const AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsImV4cCI6MTUyNjY4MDE3OSwiaWF0IjoxNTI2NTA3Mzc5fQ.eyJ1c2VyX2lkIjozMTczMDZ9.wtfo9bSg0kqxrGpOsD1JBRs9pVJUrFOCYyxtZj9htzs'
 
-module.exports = function addZybooksGradesToStudentWithToken(authToken, student) {
-  return function(student) {
-    return axios.default
-      .get(`${BASE_URL}/activities/${student.zybooksId}?auth_token=${authToken}`)
-      .then(res => {
-        return res
-      })
-      .then(res => {
-        if(res.data.error) throw new Error(res.data.error.message)
+const { pluckData } = require('./core.api')
 
-        return res.data.data
-      }) // first data from axios, second from zybooks request
-      .then(rawZybooksData => formatScores(student, rawZybooksData))
+const base = axios.default.create({
+  baseURL: 'https://zyserver.zybooks.com/v1'
+})
+
+module.exports = {
+  addZybooksGradesToStudentWithToken(authToken, student) {
+    return function(student) {
+      return base
+        .get(`/zybook/UVUCS2550WagstaffSummer2018/activities/${student.zybooksId}?auth_token=${authToken}`)
+        .then(res => {
+          return res
+        })
+        .then(res => {
+          if(res.data.error) throw new Error(res.data.error.message)
+
+          return res.data.data
+        }) // first data from axios, second from zybooks request
+        .then(rawZybooksData => formatScores(student, rawZybooksData))
+    }
+  },
+
+  signin(email, password) {
+    return base
+    .post('/signin', { email, password })
+    .then(pluckData)
+  },
+
+  renew(refresh_token) {
+    return base
+      .get(`/refresh?refresh_token=${refresh_token}`)
+      .then(pluckData)
   }
 }
 
