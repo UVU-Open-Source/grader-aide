@@ -2,14 +2,15 @@ import axios from 'axios'
 import moment from 'moment'
 
 import { pluckData } from './utils.api'
+import baseUrl from '../utils/baseURL'
 
 const base = axios.create({
-  baseURL: 'https://zyserver.zybooks.com/v1'
+  baseURL: `${baseUrl}/api/v1/authenticate/zybooks`
 })
 
 export function signin(email, password) {
   return base
-    .post('/signin', { email, password })
+    .post('/', { email, password })
     .then(pluckData)
     .then(addAuthDataToLocalStorage)
     .then(returnAuthTokenOrErrorMessage)
@@ -53,7 +54,7 @@ function tokenIsExpired(expiry_date) {
 }
 
 function renewAuth(refresh_token) {
-  return base.get(`/refresh?refresh_token=${refresh_token}`)
+  return base.post('/renew', { refresh_token })
     .then(pluckData)
     .then(addAuthDataToLocalStorage)
     .then(returnAuthTokenOrErrorMessage)
