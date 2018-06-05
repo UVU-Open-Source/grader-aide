@@ -1,5 +1,6 @@
 const axios = require('axios')
-const https = require('https')
+
+const { pluckData } = require('./core.api')
 
 // NOTE courseID is hardcoded for now but using a global variable to make refactoring more clear in the future
 const COURSE_ID = '10120000000466507'
@@ -83,5 +84,3 @@ function createStudentGradeDict(chapterIndex, students) {
     return dict
   }, { grade_data: {} })
 }
-
-const pluckData = response => response.data
