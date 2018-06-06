@@ -6,7 +6,6 @@ const { pluckData } = require('./core.api')
 const COURSE_ID = '10120000000466507'
 const BASE_URL = 'https://canvas.instructure.com/api/v1'
 module.exports = {
-  // fixme BROKEN sometimes returns wrong id for an assignment when querying canvas.
   findAssignmentId(authToken, searchTerm) {
     const config = {
       headers: {
