@@ -18,7 +18,6 @@
 </template>
 
 <script>
-// @ts-nocheck
 // todo consider refactoring so that we don't need the whole font awesome library
   export default {
     name: 'vue-button-spinner',

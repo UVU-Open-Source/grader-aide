@@ -22,7 +22,6 @@
 </template>
 
 <script>
-// @ts-nocheck
 export default {
   props: {
     zyReqErr: {

@@ -48,7 +48,7 @@
 
 <script>
 // todo reload with auth tokens causes input boxes to show up while auth is happening. see if we can fix this
-// @ts-nocheck
+
 import axios from 'axios'
 import BASE_URL from '@/utils/baseURL'
 
