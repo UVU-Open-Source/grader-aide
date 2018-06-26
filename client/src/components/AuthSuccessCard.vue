@@ -1,7 +1,9 @@
 <template>
-  <div class="card bg-success text-white">
-    <div class="card-header">{{successMessage}}</div>
-  </div>
+  <v-card color="green" dark>
+    <v-card-title>
+      {{successMessage}}
+    </v-card-title>
+  </v-card>
 </template>
 
 <script>
