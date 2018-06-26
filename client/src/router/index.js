@@ -1,8 +1,8 @@
 // @ts-nocheck
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import GradeZybooks from '@/views/GradeZybooks'
+import Login from '@/views/Login'
 
 Vue.use(Router)
 
@@ -12,6 +12,11 @@ export default new Router({
       path: '/',
       name: 'root',
       component: GradeZybooks
+    },
+    {
+      path: '/login',
+      name: 'auth',
+      component: Login
     }
   ]
 })
