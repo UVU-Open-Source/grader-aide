@@ -9,6 +9,7 @@
         <zybooks-auth-card
           v-else
           :zyReqErr="zyReqErr"
+          :loading="zyAuthPending"
           @get-zybooks-token="getZybooksToken"
         ></zybooks-auth-card>
       </v-flex>
@@ -23,9 +24,6 @@
 
 <script>
 import { mapState } from 'vuex'
-// apis
-import * as zybooksApi from '@/apis/zybooks.api'
-import * as canvasApi from '@/apis/canvas.api'
 
 // components
 import ZybooksAuthCard from '@/components/ZybooksAuthCard'
@@ -56,7 +54,7 @@ export default {
   components: {
     ZybooksAuthCard,
     CanvasAuthCard,
-    AuthSuccessCard,
+    AuthSuccessCard
   }
 }
 </script>

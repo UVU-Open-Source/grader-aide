@@ -26,14 +26,16 @@ const getters = {
 // ================================================================================
 const actions = {
   // used to check auth status of zybooks when app is loaded initially
-  initZybooksAuth({ dispatch }) {
+  initZybooksAuth({ dispatch, commit }) {
     zybooksApi
       .getStoredZybooksAuthToken() // playload shape { token: string, error: string }
       .then(response => dispatch('handleZybooksAuthResponse', response))
       .catch(err => dispatch('handleZybooksAuthError', err))
   },
   // playload shape { zyEmail: string, zyPassword: string }
-  loginZybooks({ dispatch }, { zyEmail, zyPassword }) {
+  loginZybooks({ dispatch, commit }, { zyEmail, zyPassword }) {
+    commit('zybooksLogin')
+
     zybooksApi
       .signin(zyEmail, zyPassword) // playload shape { token: string, error: string }
       .then(response => dispatch('handleZybooksAuthResponse', response))
@@ -48,7 +50,7 @@ const actions = {
   // payload expects an error object
   handleZybooksAuthError({ commit }, err) {
     // failing gracefully because if NO_TOKEN_STORED user needs to authenticate with zybooks
-    if(err.message === zybooksApi.NO_TOKEN_STORED) return
+    if(err.message === zybooksApi.NO_TOKEN_STORED) return commit('zybooksLoginFailed', '')
 
     commit('zybooksLoginFailed', 'zybooks authentication failed due to internal bug')
   }

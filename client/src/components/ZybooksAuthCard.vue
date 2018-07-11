@@ -21,6 +21,7 @@
           type="submit"
           color="success"
           flat
+          :disabled="loading"
         >
           Login To Zybooks
         </v-btn>
@@ -35,6 +36,10 @@ export default {
     zyReqErr: {
       type: String,
       default: ''
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
