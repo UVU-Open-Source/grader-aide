@@ -1,19 +1,26 @@
 <template>
-  <div class="card">
-    <div class="card-body">
-      <form @submit.prevent="handleSaveCanvasToken">
-        <div class="form-group">
-          <label>Canvas Auth Token</label>
-          <input type="text" class="form-control" v-model="cToken">
-          <small v-if="cReqErr" class="form-text text-danger">
-            {{cReqErr}}
-          </small>
-        </div>
+  <v-card>
+    <v-form @submit.prevent="handleSaveCanvasToken">
+      <v-card-text>
+        <v-text-field
+          v-model="cToken"
+          label="Canvas Auth Token"
+          color="success"
+        ></v-text-field>
+      </v-card-text>
 
-        <button type="submit" class="btn btn-primary">Save Canvas Token</button>
-      </form>
-    </div>
-  </div>
+      <v-card-actions>
+        <v-btn
+          type="submit"
+          color="success"
+          flat
+          :disabled="loading"
+        >
+          Save Canvas Token
+        </v-btn>
+      </v-card-actions>
+    </v-form>
+  </v-card>
 </template>
 
 <script>
@@ -22,6 +29,10 @@ export default {
     cReqErr: {
       type: String,
       default: ''
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
