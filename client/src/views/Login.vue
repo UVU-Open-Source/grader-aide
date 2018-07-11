@@ -1,14 +1,23 @@
 <template>
-  <v-container>
-    <auth-success-card
-      v-if="zyToken"
-      success-message="Zybooks Token Received"
-    ></auth-success-card>
-    <zybooks-auth-card
-      v-else
-      :zyReqErr="zyReqErr"
-      @get-zybooks-token="getZybooksToken"
-    ></zybooks-auth-card>
+  <v-container grid-list-md>
+    <v-layout row wrap>
+      <v-flex xs12 sm6>
+        <auth-success-card
+          v-if="zyToken"
+          success-message="Zybooks Token Received"
+        ></auth-success-card>
+        <zybooks-auth-card
+          v-else
+          :zyReqErr="zyReqErr"
+          @get-zybooks-token="getZybooksToken"
+        ></zybooks-auth-card>
+      </v-flex>
+      <v-flex xs12 sm6>
+        <auth-success-card
+          success-message="Zybooks Token Received"
+        ></auth-success-card>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
