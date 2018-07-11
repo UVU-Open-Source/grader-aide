@@ -5,10 +5,15 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapActions } = createNamespacedHelpers('auth')
+
 export default {
   name: 'App',
+  methods: mapActions([ 'initAuth' ]),
   created() {
-    this.$store.dispatch('auth/initZybooksAuth')
+    this.initAuth()
   }
 }
 </script>
