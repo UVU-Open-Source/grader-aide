@@ -73,7 +73,7 @@ const actions = {
 
     commit('canvasLoginSuccess', token)
   },
-  // playload shape { zyEmail: string, zyPassword: string } // fixme
+  // playload shape token: string
   loginCanvas({ dispatch, commit }, token) {
     console.log(token);
     commit('canvasLogin')
