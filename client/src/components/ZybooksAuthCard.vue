@@ -1,24 +1,32 @@
 <template>
-  <div class="card">
-    <div class="card-body">
-      <form @submit.prevent="handleGetZybooksToken">
-        <div class="form-group">
-          <label>Zybooks Email</label>
-          <input type="email" class="form-control" v-model="zyEmail">
-        </div>
+  <v-card>
+    <v-form @submit.prevent="handleGetZybooksToken">
+      <v-card-text>
+        <v-text-field
+          v-model="zyEmail"
+          label="Zybooks Email"
+          color="success"
+        ></v-text-field>
 
-        <div class="form-group">
-          <label>Zybooks Password</label>
-          <input type="password" class="form-control" v-model="zyPassword">
-          <small v-if="zyReqErr" class="form-text text-danger">
-            {{zyReqErr}}
-          </small>
-        </div>
+        <v-text-field
+          v-model="zyPassword"
+          label="Zybooks Password"
+          type="password"
+          color="success"
+        ></v-text-field>
+      </v-card-text>
 
-        <button type="submit" class="btn btn-primary">Login to Zybooks</button>
-      </form>
-    </div>
-  </div>
+      <v-card-actions>
+        <v-btn
+          type="submit"
+          color="success"
+          flat
+        >
+          Login To Zybooks
+        </v-btn>
+      </v-card-actions>
+    </v-form>
+  </v-card>
 </template>
 
 <script>

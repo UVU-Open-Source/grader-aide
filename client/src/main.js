@@ -11,7 +11,9 @@ import {
   VIcon,
   VGrid,
   transitions,
-  VCard
+  VCard,
+  VForm,
+  VTextField
 } from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
@@ -28,7 +30,9 @@ Vue.use(Vuetify, {
     VIcon,
     VGrid,
     transitions,
-    VCard
+    VCard,
+    VForm,
+    VTextField
   }
 })
 Vue.use(Vuex)
