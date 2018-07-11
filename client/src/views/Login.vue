@@ -10,20 +10,29 @@
           v-else
           :zyReqErr="zyReqErr"
           :loading="zyAuthPending"
-          @get-zybooks-token="getZybooksToken"
+          @get-zybooks-token="loginZybooks"
         ></zybooks-auth-card>
       </v-flex>
       <v-flex xs12 sm6>
         <auth-success-card
-          success-message="Zybooks Token Received"
+          v-if="cToken"
+          success-message="Canvas Token Received"
         ></auth-success-card>
+        <canvas-auth-card
+          v-else
+          :cReqErr="cReqErr"
+          :loading="cAuthPending"
+          @save-canvas-token="loginCanvas"
+        ></canvas-auth-card>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapActions, mapState, mapGetters } = createNamespacedHelpers('auth')
 
 // components
 import ZybooksAuthCard from '@/components/ZybooksAuthCard'
@@ -31,24 +40,21 @@ import CanvasAuthCard from '@/components/CanvasAuthCard'
 import AuthSuccessCard from '@/components/AuthSuccessCard'
 
 export default {
-  data() {
-    return {
-      // persistent
-      // fixme not used yet, these tokens
-      cToken: '',
-      // gui state
-      // fixme handle inside vuex?
-      cReqErr: ''
-    }
+  computed: {
+    ...mapState([
+      'zyToken',
+      'zyReqErr',
+      'zyAuthPending',
+      'cToken',
+      'cReqErr',
+      'cAuthPending'
+    ]),
+    ...mapGetters(['isFullyAuthenticated'])
   },
-  computed: mapState('auth', [
-    'zyToken',
-    'zyReqErr',
-    'zyAuthPending'
-  ]),
-  methods: {
-    getZybooksToken(authPayload) {
-      this.$store.dispatch('auth/loginZybooks', authPayload)
+  methods: mapActions(['loginZybooks', 'loginCanvas']),
+  watch: {
+    isFullyAuthenticated(isAuthenticated) {
+      if(isAuthenticated) this.$router.push('/')
     }
   },
   components: {
