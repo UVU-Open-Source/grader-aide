@@ -26,17 +26,18 @@ const getters = {
 // ================================================================================
 const actions = {
   // used to check auth status of zybooks when app is loaded initially
-  initZybooksAuth({ commit, dispatch }) {
+  initZybooksAuth({ dispatch }) {
     zybooksApi
       .getStoredZybooksAuthToken() // playload shape { token: string, error: string }
       .then(response => dispatch('handleZybooksAuthResponse', response))
       .catch(err => dispatch('handleZybooksAuthError', err))
   },
   // playload shape { zyEmail: string, zyPassword: string }
-  loginZybooks({ commit }, { zyEmail, zyPassword }) {
+  loginZybooks({ dispatch }, { zyEmail, zyPassword }) {
     zybooksApi
       .signin(zyEmail, zyPassword) // playload shape { token: string, error: string }
-      .then(response => commit('zybooksLoginSuccess', response))
+      .then(response => dispatch('handleZybooksAuthResponse', response))
+      .catch(err => dispatch('handleZybooksAuthError', err))
   },
   // playload shape { token: string, error: string }
   handleZybooksAuthResponse({ commit }, { token, error }) {
