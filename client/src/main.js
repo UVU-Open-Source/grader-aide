@@ -13,7 +13,8 @@ import {
   transitions,
   VCard,
   VForm,
-  VTextField
+  VTextField,
+  VProgressCircular
 } from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
@@ -32,7 +33,8 @@ Vue.use(Vuetify, {
     transitions,
     VCard,
     VForm,
-    VTextField
+    VTextField,
+    VProgressCircular
   }
 })
 Vue.use(Vuex)
