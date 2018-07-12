@@ -1,24 +1,28 @@
 <template>
   <div>
-    <button class="btn btn-success" disabled v-if="isLoaded">
-      <i class="fa fa-check"></i>
+    <v-btn disabled v-if="isLoaded">
       <slot name="success"></slot>
-    </button>
-    <button
-      class="btn btn-primary"
+    </v-btn>
+    <v-btn
       :disabled="isLoading"
+      color="success"
       @click="handleClick"
       v-else
     >
-      <i v-if="isLoading" class="fa fa-circle-o-notch fa-spin"></i>
+      <v-progress-circular
+        v-if="isLoading"
+        class="mr-2"
+        :width="2"
+        :size="20"
+        indeterminate
+        color="success"
+      ></v-progress-circular>
       <slot></slot>
-    </button>
-
+    </v-btn>
   </div>
 </template>
 
 <script>
-// todo consider refactoring so that we don't need the whole font awesome library
   export default {
     name: 'vue-button-spinner',
     props: {
