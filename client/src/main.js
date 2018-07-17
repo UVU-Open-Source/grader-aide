@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import 'vuetify/dist/vuetify.min.css';
 import {
   Vuetify,
   VApp,
@@ -17,6 +16,7 @@ import {
   VProgressCircular
 } from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 // @ts-ignore
 import App from './App'
