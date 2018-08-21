@@ -5,6 +5,7 @@ import GradeZybooks from '@/views/GradeZybooks'
 import Login from '@/views/Login'
 import CourseList from '@/views/CourseList'
 import EditCourse from '@/views/EditCourse'
+import RegisterCourse from '@/views/RegisterCourse'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/courses/:courseId/edit',
       name: 'edit-course',
       component: EditCourse
+    },
+    {
+      path: '/courses/:courseId/register',
+      name: 'register-course',
+      component: RegisterCourse
     },
     {
       path: '/login',
