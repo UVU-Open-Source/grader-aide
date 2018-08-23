@@ -7,6 +7,9 @@ const logger = require('morgan')
 const zybooksApi = require('./utils/zybooks.api')
 const canvasApi = require('./utils/canvas.api')
 
+// routers
+const editCourseRouter = require('./features/editCourse/routes')
+
 const app = express()
 
 app.use(cors())
@@ -71,6 +74,8 @@ app.post('/api/v1/authenticate/canvas', (req, res) => {
       res.status(500).end()
     })
 })
+
+app.use('/api/v1', editCourseRouter)
 
 app.get('*', express.static(`${__dirname}/../client/dist`))
 
