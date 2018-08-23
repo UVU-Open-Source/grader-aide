@@ -27,7 +27,7 @@ export default new Router({
       component: EditCourse
     },
     {
-      path: '/courses/:courseId/register',
+      path: '/courses/:canvasCourseId/register',
       name: 'register-course',
       component: RegisterCourse
     },
