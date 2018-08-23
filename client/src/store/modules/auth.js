@@ -19,7 +19,8 @@ const state = {
 // getters
 // ================================================================================
 const getters = {
-  isFullyAuthenticated: ({ zyToken, cToken}) => !!(zyToken && cToken)
+  isFullyAuthenticated: ({ zyToken, cToken}) => !!(zyToken && cToken),
+  initAuthIsFullyResolved: ({ zyAuthPending, cAuthPending }) => !(zyAuthPending || cAuthPending)
 }
 
 // ================================================================================
@@ -27,7 +28,11 @@ const getters = {
 // ================================================================================
 const actions = {
   // checks zybooks and canvas auth when app is initialized
-  initAuth({ dispatch }) {
+  initAuth({ commit, dispatch }) {
+    // in init instance these help track if init auth has finished or not to prevent premature component load
+    commit('canvasLogin')
+    commit('zybooksLogin')
+
     dispatch('initZybooksAuth')
     dispatch('initCanvasAuth')
   },
@@ -75,7 +80,6 @@ const actions = {
   },
   // playload shape token: string
   loginCanvas({ dispatch, commit }, token) {
-    console.log(token);
     commit('canvasLogin')
 
     canvasApi
