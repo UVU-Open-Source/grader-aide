@@ -4,7 +4,7 @@ const { pluckData } = require('./core.api')
 
 // NOTE courseID is hardcoded for now but using a global variable to make refactoring more clear in the future
 const COURSE_ID = '10120000000466507'
-const BASE_URL = 'https://canvas.instructure.com/api/v1'
+const BASE_URL = 'https://uvu.instructure.com/api/v1'
 module.exports = {
   findAssignmentId(authToken, searchTerm) {
     const config = {
