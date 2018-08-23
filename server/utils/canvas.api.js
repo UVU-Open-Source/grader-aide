@@ -1,11 +1,29 @@
 const axios = require('axios')
+const R = require('ramda')
 
 const { pluckData } = require('./core.api')
 
 // NOTE courseID is hardcoded for now but using a global variable to make refactoring more clear in the future
 const COURSE_ID = '10120000000466507'
 const BASE_URL = 'https://uvu.instructure.com/api/v1'
+
 module.exports = {
+  // returns a course formatted to be added to our database
+  findCourseById(authToken, courseId) {
+    const config = {
+      headers: {
+        Accept: 'application/json+canvas-string-ids',
+        Authorization: `Bearer ${authToken}`
+      }
+    }
+
+    return axios.default
+      .get(`${BASE_URL}/courses/${courseId}`, config)
+      .then(pluckData)
+      .then(({ id: canvasId, name }) => ({ canvasId, name, zyLink: '' }))
+  },
+
+  // todo this old style needs to be refactored now that canvas api has fixed id bug.
   findAssignmentId(authToken, searchTerm) {
     const config = {
       headers: {
