@@ -1,7 +1,8 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap>
-      <v-flex xs12>
+      <!-- successfully pulled course -->
+      <v-flex xs12 v-if="course">
         <v-card>
           <v-card-text>
             <h3 class="headline mb-0">{{course.name}}</h3>
@@ -9,7 +10,7 @@
             <v-form @submit.prevent="handleRegisterCourse" v-model="formIsValid">
               <v-card-text>
                 <v-text-field
-                  v-model="course.zyLink"
+                  v-model="zyLinkFormInput"
                   label="Zybooks Class Link"
                   color="success"
                   required
@@ -31,6 +32,15 @@
             </v-form>
           </v-card-text>
         </v-card>
+
+      </v-flex>
+      <!-- failed to load ajaxx data -->
+      <v-flex xs4 offset-xs4 v-if="pageLoadErr">
+        <v-card>
+          <v-card-text>
+            <p class="red--text text-sm-center">{{pageLoadErr}}</p>
+          </v-card-text>
+        </v-card>
       </v-flex>
     </v-layout>
   </v-container>
@@ -41,22 +51,12 @@ export default {
   data() {
     return {
       // persistent data
-      course: {
-        id: '466507',
-        name: 'CS-2550-001 | Summer 2018 B1',
-        zyLink: '',
-        students: [
-          {
-            name: 'john doe',
-            id: '1',
-            canvasId: '',
-            zybooksId: ''
-          }
-        ]
-      },
+      course: null,
       // gui data
       formIsValid: false,
-      formFieldHasText: [ data => !!data || 'come on. just copy paste' ]
+      zyLinkFormInput: '',
+      formFieldHasText: [ data => !!data || 'come on. just copy paste' ],
+      pageLoadErr: ''
     }
   },
   methods: {
