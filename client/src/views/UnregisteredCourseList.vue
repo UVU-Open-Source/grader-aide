@@ -10,8 +10,8 @@
 
           <v-card-actions>
             <v-btn flat color="orange lighten-2" @click="onRegister(course)">
+              <v-icon class="mr-2">edit</v-icon>
               Register
-              <v-icon class="ml-2">edit</v-icon>
             </v-btn>
           </v-card-actions>
         </v-card>
