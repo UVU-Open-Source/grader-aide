@@ -8,5 +8,11 @@ module.exports = {
       .insert(course)
       .returning('*')
       .then(R.head)
+  },
+
+  findRegisteredCourses(cIds) {
+    return knex('courses')
+      .select()
+      .whereIn('canvasId', cIds)
   }
 }

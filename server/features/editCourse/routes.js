@@ -1,4 +1,6 @@
 const router = require('express').Router()
+const R = require('ramda')
+var removeDiacritics = require('diacritics').remove;
 
 const queries = require('./queries')
 const canvasApi = require('../../utils/canvas.api')
@@ -22,6 +24,34 @@ router.post('/course/register', (req, res) => {
   if (!course.zyLink) res.status(400).json({ error: `zybooks is required to register a class` })
 
   queries.addCourse(course).then(res.json.bind(res))
+})
+
+router.get('/courses/unregistered', (req, res) => {
+  const cToken = req.get('cToken')
+
+  canvasApi.getActiveCourses(cToken)
+    .then(courses => {
+      const cIds = R.pluck('id', courses)
+
+      return Promise.all([
+        courses,
+        queries.findRegisteredCourses(cIds)
+      ])
+    })
+    .then(([active, registered]) => R.differenceWith((a, r) => a.id === r.canvasId, active, registered))
+    .then(res.json.bind(res))
+})
+
+router.get('/courses/registered', (req, res) => {
+  const cToken = req.get('cToken')
+
+  canvasApi.getActiveCourses(cToken)
+    .then(courses => {
+      const cIds = R.pluck('id', courses)
+
+      return queries.findRegisteredCourses(cIds)
+    })
+    .then(res.json.bind(res))
 })
 
 module.exports = router
