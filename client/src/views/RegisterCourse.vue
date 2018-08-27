@@ -18,7 +18,6 @@
                 ></v-text-field>
               </v-card-text>
 
-
               <v-card-actions>
                 <v-btn
                   type="submit"
@@ -47,7 +46,10 @@
 </template>
 
 <script>
+import axiosWithAuthHeaders from '../mixins/axiosWithAuthHeaders'
+
 export default {
+  mixins: [axiosWithAuthHeaders],
   data() {
     return {
       // persistent data
@@ -55,20 +57,31 @@ export default {
       // gui data
       formIsValid: false,
       zyLinkFormInput: '',
-      formFieldHasText: [ data => !!data || 'come on. just copy paste' ],
+      formFieldHasText: [ data => !!data || 'just copy paste from course preview on zybooks for this course' ],
       pageLoadErr: ''
     }
   },
   methods: {
     handleRegisterCourse(e) {
-      console.log(this.formIsValid);
-      console.log(e);
-      this.$router.push({ name: 'edit-course', params: { courseId: this.course.id } })
-      // todo send request to server to save zybooks link and then on success reroute to edit course hopefully with autofilled students with zybooks and canvas ids
+      if(!this.formIsValid) return
+
+      this.course.zyLink = this.zyLinkFormInput.replace('https://learn.zybooks.com/', '')
+
+      this.authAxios.post('/api/v1/courses/register', this.course)
+        .then(() => alert('Course was registered successfully'))
+        .then(() => this.$router.push({ name: 'registered-course' }))
+        .catch(err => {
+          alert('Unable to register course')
+
+          // after alert
+          this.$router.push({ name: 'unregistered-courses' })
+        })
     }
+  },
+  created() {
+    this.authAxios.get(`/api/v1/canvas/courses/${this.$route.params.canvasCourseId}`)
+      .then(response => this.course = response.data)
+      .catch(err => this.pageLoadErr = 'Unable to load course')
   }
 }
-// todo example zybooks request for data
-// https://zyserver.zybooks.com/v1/zybook/UVUCS2550WagstaffSummer2018/roster?zybook_roles=[%22Student%22,%22Temporary%22,%22Dropped%22]&auth_token=eyJhbGciOiJIUzI1NiIsImV4cCI6MTUzNDI4ODE1MCwiaWF0IjoxNTM0MTE1MzUwfQ.eyJ1c2VyX2lkIjozMTczMDZ9.jFc5jtwMw1j7NhD9xnJUk0SO_ZPXwwaiisOSjjwYi4k
 </script>
-
