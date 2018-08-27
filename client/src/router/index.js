@@ -3,7 +3,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import GradeZybooks from '@/views/GradeZybooks'
 import Login from '@/views/Login'
-import CourseList from '@/views/CourseList'
+import UnregisteredCourseList from '@/views/UnregisteredCourseList'
+import RegisteredCourseList from '@/views/RegisteredCourseList'
 import EditCourse from '@/views/EditCourse'
 import RegisterCourse from '@/views/RegisterCourse'
 
@@ -17,9 +18,14 @@ export default new Router({
       component: GradeZybooks
     },
     {
-      path: '/courses',
-      name: 'courses',
-      component: CourseList
+      path: '/courses/unregistered',
+      name: 'unregistered-courses',
+      component: UnregisteredCourseList
+    },
+    {
+      path: '/courses/registered',
+      name: 'registered-courses',
+      component: RegisteredCourseList
     },
     {
       path: '/courses/:courseId/edit',
