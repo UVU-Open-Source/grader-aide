@@ -77,27 +77,27 @@ export default {
   },
   methods: {
     SubmitGradesFor(chapter) {
-      // fixme disabled submitting grades for now since class is inactice.
       chapter.loading = true
-      setTimeout(() => {
-        chapter.loading = false
-        chapter.loaded = true
-      }, 1000);
 
-      // this.authAxios
-      //   .get(`/api/v1/grade/zybooks/chapter/${chapter.value}`)
-      //   .then(response => {
-      //     chapter.loading = false
-      //     if(response.data.success) chapter.loaded = true
-      //   })
-      //   .catch(e => chapter.loading = false)
+      const data = {
+        chapterNum: chapter.value
+      }
+
+      this.authAxios
+        .put(`/api/v1/courses/${this.course.canvasId}/grade/zybooks/chapter/${chapter.cAssignmentId}`, data)
+        .then(response => {
+          chapter.loading = false
+          if(response.data.success) chapter.loaded = true
+        })
+        .catch(e => chapter.loading = false)
     },
     createChapterStateObj(chapter) {
       return {
         value: parseInt(chapter.name.replace('ch', '')),
         loading: false,
         loaded: false,
-        gradeable: moment().diff(chapter.due_at, 'seconds') > 0
+        gradeable: moment().diff(chapter.due_at, 'seconds') > 0,
+        cAssignmentId: chapter.id
       }
     }
   },
