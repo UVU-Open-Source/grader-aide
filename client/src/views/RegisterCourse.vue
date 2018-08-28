@@ -41,6 +41,15 @@
           </v-card-text>
         </v-card>
       </v-flex>
+
+      <!-- loading icon -->
+      <v-flex xs2 offset-xs5 class="text-sm-center" v-if="loading">
+        <v-progress-circular
+          :size="75"
+          color="success"
+          indeterminate
+        ></v-progress-circular>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -58,7 +67,8 @@ export default {
       formIsValid: false,
       zyLinkFormInput: '',
       formFieldHasText: [ data => !!data || 'just copy paste from course preview on zybooks for this course' ],
-      pageLoadErr: ''
+      pageLoadErr: '',
+      loading: true
     }
   },
   methods: {
@@ -80,8 +90,14 @@ export default {
   },
   created() {
     this.authAxios.get(`/api/v1/canvas/courses/${this.$route.params.canvasCourseId}`)
-      .then(response => this.course = response.data)
-      .catch(err => this.pageLoadErr = 'Unable to load course')
+      .then(response => {
+        this.loading = false
+        this.course = response.data
+      })
+      .catch(err => {
+        this.loading = false
+        this.pageLoadErr = 'Unable to load course'
+      })
   }
 }
 </script>

@@ -18,12 +18,21 @@
       </v-flex>
 
       <!-- failed to load ajaxx data -->
-      <v-flex xs4 offset-xs4 v-if="pageLoadErr">
+      <v-flex xs4 offset-xs4 v-else-if="pageLoadErr">
         <v-card>
           <v-card-text>
             <p class="red--text text-sm-center">{{pageLoadErr}}</p>
           </v-card-text>
         </v-card>
+      </v-flex>
+
+      <!-- loading icon -->
+      <v-flex xs2 offset-xs5 class="text-sm-center" v-if="loading">
+        <v-progress-circular
+          :size="75"
+          color="success"
+          indeterminate
+        ></v-progress-circular>
       </v-flex>
     </v-layout>
   </v-container>
@@ -39,7 +48,8 @@ export default {
       // persistent
       courses: [],
       // gui
-      pageLoadErr: ''
+      pageLoadErr: '',
+      loading: true
     }
   },
   methods: {
@@ -52,8 +62,14 @@ export default {
   created() {
     this.authAxios.get('/api/v1/courses/registered')
       .then(response => response.data)
-      .then(courses => this.courses = courses)
-      .catch(err => this.pageLoadErr = 'Unable to load courses')
+      .then(courses => {
+        this.courses = courses
+        this.loading = false
+      })
+      .catch(err => {
+        this.pageLoadErr = 'Unable to load courses'
+        this.loading = false
+      })
   }
 }
 </script>
