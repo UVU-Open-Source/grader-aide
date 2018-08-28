@@ -13,7 +13,8 @@ import {
   VCard,
   VForm,
   VTextField,
-  VProgressCircular
+  VProgressCircular,
+  VToolbar
 } from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
@@ -34,7 +35,8 @@ Vue.use(Vuetify, {
     VCard,
     VForm,
     VTextField,
-    VProgressCircular
+    VProgressCircular,
+    VToolbar
   }
 })
 Vue.use(Vuex)
