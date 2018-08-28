@@ -9,6 +9,7 @@ const canvasApi = require('./utils/canvas.api')
 
 // routers
 const editCourseRouter = require('./features/editCourse/routes')
+const gradeAssignmentRouter = require('./features/gradeAssignment/routes')
 
 const app = express()
 
@@ -18,28 +19,6 @@ app.use(logger('dev'))
 
 app.get('/ping', (req, res) => {
   res.send('pong')
-})
-
-app.get('/api/v1/grade/zybooks/chapter/:chapterNum', (req, res) => {
-  // @ts-ignore
-  const students = require('./students.json')
-
-  const { chapterNum } = req.params
-  const cToken = req.get('cToken')
-  const zyToken = req.get('zyToken')
-
-  const addZybooksGradesToStudent = zybooksApi.addZybooksGradesToStudentWithToken(zyToken)
-  const PromiseGradesForStudents = students.map(addZybooksGradesToStudent)
-
-  let gradedStudents
-  Promise.all(PromiseGradesForStudents)
-    .then(modifiedStudents => gradedStudents = modifiedStudents)
-    .then(() => canvasApi.findAssignmentId(cToken, `ch${chapterNum}`))
-    .then(assignmentId => canvasApi.submitZybooksGradesToCanvas(cToken, assignmentId, chapterNum, gradedStudents))
-    .then(() => res.json({ success: true }))
-    .catch(e => {
-      res.status(500).end()
-    })
 })
 
 app.post('/api/v1/authenticate/zybooks', (req, res) => {
@@ -76,6 +55,7 @@ app.post('/api/v1/authenticate/canvas', (req, res) => {
 })
 
 app.use('/api/v1', editCourseRouter)
+app.use('/api/v1', gradeAssignmentRouter)
 
 app.get('*', express.static(`${__dirname}/../client/dist`))
 
