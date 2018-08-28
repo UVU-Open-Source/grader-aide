@@ -54,9 +54,7 @@ export default {
   },
   methods: {
     onGrade(course) {
-      // todo view needs to be made for this still but its ready when the view is
-      console.log('would navigate if I could')
-      // this.$router.push({ name: 'grade-course', params: { canvasCourseId: course.id } })
+      this.$router.push({ name: 'grade-assignment', params: { canvasCourseId: course.canvasId } })
     }
   },
   created() {
