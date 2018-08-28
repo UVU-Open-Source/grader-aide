@@ -23,53 +23,39 @@ module.exports = {
       .then(({ id: canvasId, name }) => ({ canvasId, name, zyLink: '' }))
   },
 
-  // todo this old style needs to be refactored now that canvas api has fixed id bug.
-  findAssignmentId(authToken, searchTerm) {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${authToken}`
-      },
-      // custom transformer was used because of number errors that occur with canvas id's
-      // this transformer function maintains the response as a string unless there was an error
-      // no results. If results were found, they first id is returned as a string
-      transformResponse: res => {
-        const idField = res.match(/"id":\d*/g) // '"id":123456'
+  getStudentsInCourse(authToken, courseId) {
+    const http = createAxiosInstance(authToken)
 
-        if(idField) return idField[0].split(':')[1] // ['"id"', '123456']
+    return http.get(`/courses/${courseId}/users?enrollment_type=student&per_page=100`)
+      .then(pluckData)
+  },
 
-        return {
-          ...res,
-          data: JSON.parse(res)
-        }
-      }
-    }
+  getActiveCourses(authToken) {
+    const http = createAxiosInstance(authToken)
 
-    return axios.default
-      .get(`${BASE_URL}/courses/${COURSE_ID}/assignments?search_term=${searchTerm}`, config)
-      .then(response => {
-        if(response.data.errors) throw new Error('unable to fulfill findAssignmentId request')
-        if(!response.data.length) throw new Error(`assignment ${searchTerm} was not found`)
+    return http.get('/courses?enrollment_state=active&enrollment_type=teacher')
+      .then(pluckData)
+  },
 
-        return response.data
-      })
+  getCourseAssignments(authToken, courseId) {
+    const http = createAxiosInstance(authToken)
+
+    return http.get(`/courses/${courseId}/assignments?per_page=100`)
+      .then(pluckData)
   },
 
   submitZybooksGradesToCanvas(authToken, assignmentId, chapterNum, students) {
     const chapterIndex = chapterNum - 1
-    const config = {
-      headers: {
-        Authorization: `Bearer ${authToken}`
-      }
-    }
+
+    const http = createAxiosInstance(authToken)
 
     const data = createStudentGradeDict(chapterIndex, students)
-
-    // return {data, assignmentId}
-    return axios.default
-      .post(`${BASE_URL}/courses/${COURSE_ID}/assignments/${assignmentId}/submissions/update_grades`, data, config)
-      .then(response => {
-        if(response.data.errors) throw new Error('unable to fulfill findAssignmentId request')
-      })
+return data
+    // return http
+    //   .post(`/courses/${COURSE_ID}/assignments/${assignmentId}/submissions/update_grades`, data)
+    //   .then(response => {
+    //     if(response.data.errors) throw new Error('unable to fulfill request')
+    //   })
   },
 
   checkIfTokenIsValid(token) {
@@ -100,4 +86,14 @@ function createStudentGradeDict(chapterIndex, students) {
 
     return dict
   }, { grade_data: {} })
+}
+
+function createAxiosInstance(authToken) {
+  return axios.default.create({
+    baseURL: BASE_URL,
+    headers: {
+      Accept: 'application/json+canvas-string-ids',
+      Authorization: `Bearer ${authToken}`
+    }
+  })
 }
