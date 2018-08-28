@@ -102,7 +102,7 @@ const actions = {
 // mutations
 // ================================================================================
 const mutations = {
-  zybooksLogin() {
+  zybooksLogin(state) {
     state.zyAuthPending = true
   },
   zybooksLoginSuccess(state, token) {
@@ -115,7 +115,7 @@ const mutations = {
     state.zyReqErr = error
     state.zyAuthPending = false
   },
-  canvasLogin() {
+  canvasLogin(state) {
     state.cAuthPending = true
   },
   canvasLoginSuccess(state, token) {
