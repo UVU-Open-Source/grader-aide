@@ -7,18 +7,15 @@ const axios = require('axios')
 
 const { pluckData } = require('./core.api')
 
-const base = axios.default.create({
+const http = axios.default.create({
   baseURL: 'https://zyserver.zybooks.com/v1'
 })
 
 module.exports = {
   addZybooksGradesToStudentWithToken(authToken, student) {
     return function(student) {
-      return base
+      return http
         .get(`/zybook/UVUCS2550WagstaffSummer2018/activities/${student.zybooksId}?auth_token=${authToken}`)
-        .then(res => {
-          return res
-        })
         .then(res => {
           if(res.data.error) throw new Error(res.data.error.message)
 
@@ -28,14 +25,20 @@ module.exports = {
     }
   },
 
+  getStudentsForCourse(authToken, courseLink) {
+    return http.get(`/${courseLink}/roster?zybook_roles=["Student","Dropped"]&auth_token=${authToken}`)
+      .then(pluckData)
+      .then(data => data.roster.Student)
+  },
+
   signin(email, password) {
-    return base
+    return http
     .post('/signin', { email, password })
     .then(pluckData)
   },
 
   renew(refresh_token) {
-    return base
+    return http
       .get(`/refresh?refresh_token=${refresh_token}`)
       .then(pluckData)
   }
