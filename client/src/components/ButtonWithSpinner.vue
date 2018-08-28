@@ -4,7 +4,7 @@
       <slot name="success"></slot>
     </v-btn>
     <v-btn
-      :disabled="isLoading"
+      :disabled="isLoading || disabled"
       color="success"
       @click="handleClick"
       v-else
@@ -27,6 +27,10 @@
     name: 'vue-button-spinner',
     props: {
       isLoading: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
         type: Boolean,
         default: false
       },
