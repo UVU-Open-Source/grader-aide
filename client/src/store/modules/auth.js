@@ -33,12 +33,14 @@ const actions = {
     commit('canvasLogin')
     commit('zybooksLogin')
 
-    dispatch('initZybooksAuth')
-    dispatch('initCanvasAuth')
+    return Promise.all([
+      dispatch('initZybooksAuth'),
+      dispatch('initCanvasAuth')
+    ])
   },
   // used to check auth status of zybooks when app is loaded initially
   initZybooksAuth({ dispatch, commit }) {
-    zybooksApi
+    return zybooksApi
       .getStoredZybooksAuthToken() // playload shape { token: string, error: string }
       .then(response => dispatch('handleZybooksAuthResponse', response))
       .catch(err => dispatch('handleZybooksAuthError', err))
@@ -67,7 +69,7 @@ const actions = {
   },
   // used to check auth status of zybooks when app is loaded initially
   initCanvasAuth({ dispatch, commit }) {
-    canvasApi
+    return canvasApi
       .getStoredCanvasAuthToken() // playload shape { token: string, error: string }
       .then(response => dispatch('handleCanvasAuthResponse', response))
       .catch(err => dispatch('handleCanvasAuthError', err))
