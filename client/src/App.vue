@@ -7,7 +7,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-toolbar-items>
+      <v-toolbar-items v-if="isFullyAuthenticated">
         <v-btn flat :to="{ name: 'registered-courses' }">Registered Courses</v-btn>
         <v-btn flat :to="{ name: 'unregistered-courses' }">Unregistered Courses</v-btn>
       </v-toolbar-items>
@@ -20,11 +20,11 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters } = createNamespacedHelpers('auth')
+const { mapGetters, mapState } = createNamespacedHelpers('auth')
 
 export default {
   name: 'App',
-  computed: mapGetters([ 'initAuthIsFullyResolved' ])
+  computed: mapGetters([ 'initAuthIsFullyResolved', 'isFullyAuthenticated' ])
 }
 </script>
 
