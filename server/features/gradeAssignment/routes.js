@@ -1,3 +1,4 @@
+// @ts-nocheck
 const router = require('express').Router()
 const R = require('ramda')
 const removeDiacritics = require('diacritics').remove;
@@ -23,21 +24,23 @@ router.get('/courses/:courseId/assignments', (req, res) => {
     })
 })
 
-router.put('/courses/:courseId/grade/zybooks/chapter/:cAssignmentId', (req, res) => {
+router.put('/courses/:cCourseId/grade/zybooks/chapter/:cAssignmentId', (req, res) => {
   const cToken = req.get('cToken')
   const zyToken = req.get('zyToken')
-  console.log('zyToken: ', zyToken);
-  const { courseId, cAssignmentId } = req.params
+
+  const { cCourseId, cAssignmentId } = req.params
   const { chapterNum } = req.body
 
-  queries.findCourseByCanvasId(courseId)
-    .then(({ zyLink }) => Promise.all([
-      canvasApi.getStudentsInCourse(cToken, courseId),
-      zybooksApi.getStudentsForCourse(zyToken, zyLink)
+  let course
+  queries.findCourseByCanvasId(cCourseId)
+    .then(localCourse => course = localCourse)
+    .then(() => Promise.all([
+      canvasApi.getStudentsInCourse(cToken, cCourseId),
+      zybooksApi.getStudentsForCourse(zyToken, course.zyLink)
     ]))
     .then(mapCanvasToZybooksStudents)
-    .then(addZybooksChapterGradesToStudentsWithZyToken(zyToken))
-    .then(students => canvasApi.submitZybooksGradesToCanvas(cToken, cAssignmentId, chapterNum, students))
+    .then(students => addZybooksChapterGradesToStudentsWithZyToken(zyToken, course.zyLink, students))
+    .then(students => canvasApi.submitZybooksGradesToCanvas(cToken, cCourseId, cAssignmentId, chapterNum, students))
     .then(() => res.json({ success: true }))
     .catch(e => {
       res.status(500).end()
@@ -62,7 +65,7 @@ function mapCanvasToZybooksStudents([ cStudents, zyStudents ]) {
       const cleanZyFirst = cleanString(zyStudent.first_name)
       const cleanZyLast = cleanString(zyStudent.last_name)
 
-      return RegExp(`^${cleanZyFirst}.*${cleanZyLast}.*`).test(cleanCStudent)
+      return RegExp(`.*${cleanZyFirst}.*${cleanZyLast}.*`).test(cleanCStudent)
     })
 
     return {
@@ -74,14 +77,12 @@ function mapCanvasToZybooksStudents([ cStudents, zyStudents ]) {
 }
 
 // returns students that have a zybooks id and their grades formatted chapter readings
-function addZybooksChapterGradesToStudentsWithZyToken(zyToken) {
-  return function(students) {
-    const addZybooksGradesToStudent = zybooksApi.addZybooksGradesToStudentWithToken(zyToken)
+function addZybooksChapterGradesToStudentsWithZyToken(zyToken, zyLink, students) {
+  const addZybooksGradesToStudent = zybooksApi.addZybooksGradesToStudentWithToken(zyToken, zyLink)
 
-    return Promise.all(
-      students
-        .filter(student => student.zybooksId) // don't grade students who aren't in zybooks yet
-        .map(addZybooksGradesToStudent)
-    )
-  }
+  return Promise.all(
+    students
+      .filter(student => student.zybooksId) // don't grade students who aren't in zybooks yet
+      .map(addZybooksGradesToStudent)
+  )
 }

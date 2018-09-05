@@ -12,10 +12,10 @@ const http = axios.default.create({
 })
 
 module.exports = {
-  addZybooksGradesToStudentWithToken(authToken, student) {
+  addZybooksGradesToStudentWithToken(authToken, zyLink) {
     return function(student) {
       return http
-        .get(`/zybook/UVUCS2550WagstaffSummer2018/activities/${student.zybooksId}?auth_token=${authToken}`)
+        .get(`/${zyLink}/activities/${student.zybooksId}?auth_token=${authToken}`)
         .then(res => {
           if(res.data.error) throw new Error(res.data.error.message)
 

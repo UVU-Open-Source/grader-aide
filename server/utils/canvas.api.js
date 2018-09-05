@@ -4,7 +4,6 @@ const R = require('ramda')
 const { pluckData } = require('./core.api')
 
 // NOTE courseID is hardcoded for now but using a global variable to make refactoring more clear in the future
-const COURSE_ID = '10120000000466507'
 const BASE_URL = 'https://uvu.instructure.com/api/v1'
 
 module.exports = {
@@ -44,18 +43,18 @@ module.exports = {
       .then(pluckData)
   },
 
-  submitZybooksGradesToCanvas(authToken, assignmentId, chapterNum, students) {
+  submitZybooksGradesToCanvas(authToken, courseId, assignmentId, chapterNum, students) {
     const chapterIndex = chapterNum - 1
 
     const http = createAxiosInstance(authToken)
 
     const data = createStudentGradeDict(chapterIndex, students)
-return data
-    // return http
-    //   .post(`/courses/${COURSE_ID}/assignments/${assignmentId}/submissions/update_grades`, data)
-    //   .then(response => {
-    //     if(response.data.errors) throw new Error('unable to fulfill request')
-    //   })
+
+    return http
+      .post(`/courses/${courseId}/assignments/${assignmentId}/submissions/update_grades`, data)
+      .then(response => {
+        if(response.data.errors) throw new Error('unable to fulfill request')
+      })
   },
 
   checkIfTokenIsValid(token) {
