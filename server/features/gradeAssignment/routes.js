@@ -40,7 +40,7 @@ router.put('/courses/:cCourseId/grade/zybooks/chapter/:cAssignmentId', (req, res
     ]))
     .then(mapCanvasToZybooksStudents)
     .then(students => addZybooksChapterGradesToStudentsWithZyToken(zyToken, course.zyLink, students))
-    // .then(students => canvasApi.submitZybooksGradesToCanvas(cToken, cCourseId, cAssignmentId, chapterNum, students))
+    .then(students => canvasApi.submitZybooksGradesToCanvas(cToken, cCourseId, cAssignmentId, chapterNum, students))
     .then(() => res.json({ success: true }))
     .catch(e => {
       res.status(500).end()
