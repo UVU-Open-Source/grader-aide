@@ -1,10 +1,8 @@
 const router = require('express').Router()
 const R = require('ramda')
-var removeDiacritics = require('diacritics').remove;
 
 const queries = require('./queries')
 const canvasApi = require('../../utils/canvas.api')
-const zybooksApi = require('../../utils/zybooks.api')
 
 // query canvas for a course
 router.get('/canvas/courses/:courseId', (req, res) => {
