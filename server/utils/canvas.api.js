@@ -45,10 +45,12 @@ module.exports = {
 
     const http = createAxiosInstance(authToken)
 
-    const data = createStudentGradeDict(chapterIndex, students)
-
     return http
-      .post(`/courses/${courseId}/assignments/${assignmentId}/submissions/update_grades`, data)
+      .get(`/courses/${courseId}/assignments/${assignmentId}`)
+      .then(({ data: { points_possible } }) => createStudentGradeDict(chapterIndex, points_possible, students))
+      .then(dict => (
+        http.post(`/courses/${courseId}/assignments/${assignmentId}/submissions/update_grades`, dict)
+      ))
       .then(response => {
         if(response.data.errors) throw new Error('unable to fulfill request')
       })
@@ -69,11 +71,14 @@ module.exports = {
 // ==================================================
 // helper functions
 // ==================================================
+// mult/divide by 10 gives 1 decimal. Makes lower point value assignments more accurate
+const formatScoresForCanvas = (rawScore, ptsPossible) => Math.round(rawScore * ptsPossible * 10) / 10
+
 // this formats the data in a way that the canvas api expects
-function createStudentGradeDict(chapterIndex, students) {
+function createStudentGradeDict(chapterIndex, ptsPossible, students) {
   return students.reduce((dict, student) => {
     dict.grade_data[student.canvasId] = {
-      posted_grade: student.zybooksGrades[chapterIndex]
+      posted_grade: formatScoresForCanvas(student.zybooksGrades[chapterIndex], ptsPossible)
     }
 
     return dict
