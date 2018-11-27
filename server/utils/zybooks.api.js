@@ -26,7 +26,8 @@ module.exports = {
   },
 
   getStudentsInCourse(authToken, courseLink) {
-    return http.get(`/${courseLink}/roster?zybook_roles=["Student","Dropped"]&auth_token=${authToken}`)
+    return http
+      .get(`/${courseLink}/roster?zybook_roles=["Student","Dropped"]&auth_token=${authToken}`)
       .then(pluckData)
       .then(data => data.roster.Student)
   },
