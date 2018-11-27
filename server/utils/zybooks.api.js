@@ -25,7 +25,7 @@ module.exports = {
     }
   },
 
-  getStudentsForCourse(authToken, courseLink) {
+  getStudentsInCourse(authToken, courseLink) {
     return http.get(`/${courseLink}/roster?zybook_roles=["Student","Dropped"]&auth_token=${authToken}`)
       .then(pluckData)
       .then(data => data.roster.Student)
@@ -33,8 +33,8 @@ module.exports = {
 
   signin(email, password) {
     return http
-    .post('/signin', { email, password })
-    .then(pluckData)
+      .post('/signin', { email, password })
+      .then(pluckData)
   },
 
   renew(refresh_token) {
@@ -47,8 +47,6 @@ module.exports = {
 // ==================================================
 // helpers
 // ==================================================
-const convertToCanvasTotal = x => Math.round(x) / 10
-
 function formatScores(student, rawZybooksData) {
   student.zybooksGrades = []
 
@@ -65,8 +63,9 @@ function formatScores(student, rawZybooksData) {
       }
     }
 
-    const rawTotal = completedActivities/totalActivities * 100
-    student.zybooksGrades.push(convertToCanvasTotal(rawTotal))
+    // will end up being a decimal between 0 and 1
+    const rawTotal = completedActivities/totalActivities
+    student.zybooksGrades.push(rawTotal)
   }
 
   return student

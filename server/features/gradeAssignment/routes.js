@@ -36,7 +36,7 @@ router.put('/courses/:cCourseId/grade/zybooks/chapter/:cAssignmentId', (req, res
     .then(localCourse => course = localCourse)
     .then(() => Promise.all([
       canvasApi.getStudentsInCourse(cToken, cCourseId),
-      zybooksApi.getStudentsForCourse(zyToken, course.zyLink)
+      zybooksApi.getStudentsInCourse(zyToken, course.zyLink)
     ]))
     .then(mapCanvasToZybooksStudents)
     .then(students => addZybooksChapterGradesToStudentsWithZyToken(zyToken, course.zyLink, students))
