@@ -13,15 +13,23 @@ const http = axios.default.create({
 
 module.exports = {
   addZybooksGradesToStudentWithToken(authToken, zyLink) {
-    return function(student) {
-      return http
-        .get(`/${zyLink}/activities/${student.zybooksId}?auth_token=${authToken}`)
-        .then(res => {
-          if(res.data.error) throw new Error(res.data.error.message)
+    return function(student, i) {
+      const delayExecution = i * 2000 || 2000
 
-          return res.data.data
-        }) // first data from axios, second from zybooks request
-        .then(rawZybooksData => formatScores(student, rawZybooksData))
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          return http
+            .get(`/${zyLink}/activities/${student.zybooksId}?auth_token=${authToken}`)
+            .then(res => {
+              if(res.data.error) throw new Error(res.data.error.message)
+
+              return res.data.data
+            }) // first data from axios, second from zybooks request
+            .then(rawZybooksData => formatScores(student, rawZybooksData))
+            .then(resolve)
+            .catch(reject)
+        }, delayExecution);
+      });
     }
   },
 
