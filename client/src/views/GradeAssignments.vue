@@ -14,6 +14,15 @@
                 Grade Zybooks chapters
               </v-flex>
 
+              <v-flex xs12 class="ml-2">
+                <b>NOTE</b> zybooks now has a rate limit when grading. Only click one grade chapter button at a time.
+                Also, yes. It really does take that long to get around rate limiting now.
+              </v-flex>
+
+              <v-flex xs12 class="ml-2 red--text" v-if="gradeError">
+                Failed to grade assignment
+              </v-flex>
+
               <v-flex xs2 v-for="(chapter, index) of chapters" :key="`${chapter.value}.${index}`">
                 <button-with-spinner
                   :isLoading="chapter.loading"
@@ -72,12 +81,14 @@ export default {
       // gui state
       chapters: [],
       pageLoadErr: '',
-      loading: true
+      loading: true,
+      gradeError: false
     }
   },
   methods: {
     SubmitGradesFor(chapter) {
       chapter.loading = true
+      this.gradeError = false
 
       const data = {
         chapterNum: chapter.value
@@ -89,7 +100,10 @@ export default {
           chapter.loading = false
           if(response.data.success) chapter.loaded = true
         })
-        .catch(e => chapter.loading = false)
+        .catch(e => {
+          chapter.loading = false
+          this.gradeError = true
+        })
     },
     createChapterStateObj(chapter) {
       return {
