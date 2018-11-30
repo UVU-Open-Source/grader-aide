@@ -14,7 +14,7 @@
                 Grade Zybooks chapters
               </v-flex>
 
-              <v-flex xs2 v-for="chapter of chapters" :key="chapter.value">
+              <v-flex xs2 v-for="(chapter, index) of chapters" :key="`${chapter.value}.${index}`">
                 <button-with-spinner
                   :isLoading="chapter.loading"
                   :isLoaded="chapter.loaded"
